@@ -22,7 +22,8 @@
 
   "autoload": {
     "psr-4": {
-      "uguranyum\\sendmailcommand\\": ""
+      "uguranyum\\sendmailcommand\\": "",
+      "uguranyum\\sendmailcommand\\commands": ""
     }
   }
 }
