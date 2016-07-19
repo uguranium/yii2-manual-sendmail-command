@@ -11,6 +11,7 @@ use Yii;
  * @property integer $special_id
  * @property string $template
  * @property string $create_date
+ * @property string $json_values
  */
 class SendmailModel extends \yii\db\ActiveRecord
 {
@@ -30,7 +31,7 @@ class SendmailModel extends \yii\db\ActiveRecord
         return [
             [['email'], 'required'],
             [['special_id'], 'integer'],
-            [['email', 'template', 'create_date'], 'string', 'max' => 255],
+            [['email', 'template', 'json_values', 'create_date'], 'string', 'max' => 255],
         ];
     }
 
