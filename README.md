@@ -71,6 +71,16 @@ In the components's section of your common/main-local.php
 
 
 
+Use the sample template:
+```
+path\vendor\uguranyum\yii2-manual-sendmail-command\stemplate\wellcome.php
+Copy to:
+path\common\mail\wellcome.php
+```
+
+
+
+
 REQUIREMENTS
 ------------
 Yii2 PHP Framework

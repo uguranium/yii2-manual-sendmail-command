@@ -6,6 +6,8 @@ use Yii;
 
 class Sendmail
 {
+    public $report_mails = ['ugur@wiflap.com'];
+
     public function saveDb($email, $special_id = false, $template = 10, $json_values = false, $create_date = false){
         $new_mail               = new SendmailModel();
         $new_mail->email        = $email;
@@ -20,12 +22,37 @@ class Sendmail
     public function run($template = 10)
     {
         $mails  = Yii::$app->db->createCommand('SELECT * FROM `mail_list`  WHERE `template` LIKE '.$template)->queryAll();
-        print_r($mails);
+        $last_id_before = (int)Yii::$app->db->createCommand('SELECT * FROM `mail_status`  ORDER BY id DESC LIMIT 1')->queryOne()['id'];
         foreach($mails as $mail){
-            Yii::$app->mailer->compose('wellcome_responsive', ['params' => 'asd'])
+            $params = json_decode($mail['json_values']);
+            $params = ['email' => $mail['email'] , 'password' => $params->password ,'username' => $params->username ];
+            //Send the mails
+            Yii::$app->mailer->compose('wellcome', $params )
                 ->setFrom('noreply@wiflap.com')
                 ->setTo($mail['email'])
-                ->setSubject('Wellcome to Wiflap. (Dream. Book. Discover.)')
+                ->setSubject('Wellcome to Wiflap (Login Information)')
+                ->send();
+            //Insert the database sended mails.
+            Yii::$app->db->createCommand()->insert('mail_status', [
+                'mail_list_id' => $mail['id'],
+                'email' => $mail['email'],
+                'status' => 1,
+                'template' => $mail['template'],
+                'send_date'=> time()
+            ])->execute();
+        }
+        $last_id_after = (int)Yii::$app->db->createCommand('SELECT * FROM `mail_status`  ORDER BY id DESC LIMIT 1')->queryOne()['id'];
+        $this->results($last_id_before+1,$last_id_after);
+    }
+
+    public function results($last_id_before,$last_id_after){
+        $mails  = Yii::$app->db->createCommand('SELECT * FROM `mail_status` WHERE `id` BETWEEN '.$last_id_before.' AND '.$last_id_after.' ')->queryAll();
+        //print_r($mails);
+        foreach($this->report_mails as $mail){
+            Yii::$app->mailer->compose('reports', ['mails' => $mails] )
+                ->setFrom('noreply@wiflap.com')
+                ->setTo($mail)
+                ->setSubject('Rentalsunited Yeni Kullanıcı Raporu')
                 ->send();
         }
     }
@@ -34,5 +61,8 @@ class Sendmail
         return substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, $length);
     }
 
+    public function turnicateMailList(){
+        Yii::$app->db->createCommand()->truncateTable('mail_list')->execute();
+    }
 
 }
