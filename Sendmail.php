@@ -6,7 +6,7 @@ use Yii;
 
 class Sendmail
 {
-    public $report_mails = ['ugur@wiflap.com'];
+    public $report_mails = ['ugur@companyx.com'];
 
     public function saveDb($email, $special_id = false, $template = 10, $json_values = false, $create_date = false){
         $new_mail               = new SendmailModel();
@@ -28,9 +28,9 @@ class Sendmail
             $params = ['email' => $mail['email'] , 'password' => $params->password ,'username' => $params->username ];
             //Send the mails
             Yii::$app->mailer->compose('wellcome', $params )
-                ->setFrom('noreply@wiflap.com')
+                ->setFrom('noreply@companyx.com')
                 ->setTo($mail['email'])
-                ->setSubject('Wellcome to Wiflap (Login Information)')
+                ->setSubject('Wellcome to Companyx (Login Information)')
                 ->send();
             //Insert the database sended mails.
             Yii::$app->db->createCommand()->insert('mail_status', [
@@ -50,7 +50,7 @@ class Sendmail
         //print_r($mails);
         foreach($this->report_mails as $mail){
             Yii::$app->mailer->compose('reports', ['mails' => $mails] )
-                ->setFrom('noreply@wiflap.com')
+                ->setFrom('noreply@companyx.com')
                 ->setTo($mail)
                 ->setSubject('Rentalsunited Yeni Kullanıcı Raporu')
                 ->send();

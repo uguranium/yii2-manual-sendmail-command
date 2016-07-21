@@ -26,6 +26,7 @@ class m160718_112243_create_news_table extends Migration
             'mail_list_id'  => $this->integer(),
             'email'         => $this->string()->notNull(),
             'status'        => $this->smallInteger(),
+            'template'      => $this->integer(),
             'send_date'     => $this->string(),
         ]);
     }
